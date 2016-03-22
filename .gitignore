@@ -1,4 +1,4 @@
 bower_components/*
 node_modules/*
-issue_tracker/static/*
+issuetracker/static/*
 *.py[cod]
