@@ -20,7 +20,7 @@ Admin
     </ul>
 </nav>
 <h4 id="admin-home" class="text-muted"><a href="javascript:void(0)">Admin</a>
-    <span class="tab"></span>{{ session.admin }} <a href="{{ url_for('admin_logout') }}">(Logout)</a>
+    <span class="tab"></span>{{ session.admin }} <a href="{{ url_for('admin_blueprint.admin_logout') }}">(Logout)</a>
 </h4>
 </div>
 {% endif %}
