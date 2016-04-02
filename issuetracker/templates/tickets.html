@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+Tickets
+{% endblock %}
+
+{% block page_title %}
+Tickets
+{% endblock %}
+
+{% block content %}
+<p>
+All tickets here.
+</p>
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#tickets");
+{% endblock %}

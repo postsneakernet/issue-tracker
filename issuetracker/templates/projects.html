@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+Projects
+{% endblock %}
+
+{% block page_title %}
+Projects
+{% endblock %}
+
+{% block content %}
+<p>
+All projects here.
+</p>
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#projects");
+{% endblock %}

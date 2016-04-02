@@ -1,0 +1,18 @@
+{% extends 'project_detail.html' %}
+{% block title %}
+Archived Ticket A
+{% endblock %}
+
+{% block page_title %}
+Archived Ticket A
+{% endblock %}
+
+{% block content %}
+Some content about archived ticket.
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#archive");
+{{ super() }}
+{% endblock %}

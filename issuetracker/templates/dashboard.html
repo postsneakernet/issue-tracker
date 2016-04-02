@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+Dashboard content here.
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#dashboard");
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'projects.html' %}
+{% block title %}
+Project A
+{% endblock %}
+
+{% block page_title %}
+Project A
+{% endblock %}
+
+{% block sub_nav %}
+<div class="sub-header clearfix">
+<nav>
+  <ul id="sub-nav" class="nav nav-pills pull-right">
+      <li id="submit" role="presentation"><a href="{{ url_for('submit_ticket') }}">Submit Ticket</a></li>
+      <li id="project-tickets" role="presentation"><a href="{{ url_for('project_tickets') }}">Tickets</a></li>
+      <li id="archive" role="presentation"><a href="{{ url_for('archive') }}">Archive</a></li>
+    </ul>
+</nav>
+<h4 class="text-muted"><a href="{{ url_for('project_detail') }}">Project A</a></h4>
+</div>
+{% endblock %}
+
+{% block content %}
+<p>
+Some content about this project.
+</p>
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+{{ super() }}
+{% endblock %}

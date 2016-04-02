@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}
+Issue Tracker
+{% endblock %}
+
+{% block page_title %}
+Issue Tracker
+{% endblock %}
+
+{% block content %}
+Issue Tracker content here / recent activity
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#index");
+{% endblock %}

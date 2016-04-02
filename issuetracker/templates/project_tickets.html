@@ -1,0 +1,18 @@
+{% extends 'project_detail.html' %}
+{% block title %}
+Tickets
+{% endblock %}
+
+{% block page_title %}
+Tickets
+{% endblock %}
+
+{% block content %}
+All tickets here
+{{ super() }}
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#project-tickets");
+{{ super() }}
+{% endblock %}
