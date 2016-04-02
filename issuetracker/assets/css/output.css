@@ -1,0 +1,21 @@
+.header {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 20 px;
+  border-bottom: 1px solid #e5e5e5; }
+  .header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px; }
+
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5; }
+
+.container {
+  max-width: 730px; }
+
+/*# sourceMappingURL=output.css.map */

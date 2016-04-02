@@ -1,5 +1,8 @@
 bower_components/*
 node_modules/*
-.sass-cache/*
+**/.sass-cache/*
 *.py[cod]
 issuetracker/static/*
+*~
+*.swp
+*.swo
