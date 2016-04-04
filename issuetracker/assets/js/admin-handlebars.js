@@ -1,7 +1,7 @@
 var admin = (function () {
     $(document).ready(function () {
         console.log("admin iife was called");
-        admin.getAdminTemplate(2500);
+        admin.getAdminTemplate(5000);
     });
     $("#admin-home").click(function () {
         custom.updateActive("#admin-home", "#sub-nav li");
@@ -127,9 +127,9 @@ var admin = (function () {
         });
     };
 
-    var getMaintainersUpdateTemplate = function (t) {
+    var getMaintainersUpdateTemplate = function (t, path) {
         console.log("admin.getMaintainersUpdateTemplate was called");
-        getTemplate(t, "Maintainers", "#maintainers-update-template", undefined, "/ajax/admin/maintainers/update", remoteJSON, function () {
+        getTemplate(t, "Maintainers", "#maintainers-update-template", undefined, "/ajax/admin/maintainers/update/" + path, remoteJSON, function () {
                 $("#maintainers-update-form").validate({
                     rules: {
                         username: "required",
@@ -144,8 +144,8 @@ var admin = (function () {
                         }
                     },
                     submitHandler: function () {
-                        admin.sendFormData("/ajax/admin/maintainers/update", admin.getFormData("#maintainers-update-form"), function () {
-                            getMaintainersTemplate(2500);
+                        admin.sendFormData("/ajax/admin/maintainers/update/" + path, admin.getFormData("#maintainers-update-form"), function () {
+                            getMaintainersTemplate(5000);
                         });
                     }
                 });
@@ -193,7 +193,7 @@ var admin = (function () {
         var obj = getFormData(formId);
         obj['delete'] = true;
         sendFormData(url, obj);
-        getMaintainersTemplate(2500);
+        getMaintainersTemplate(5000);
     };
 
     return {

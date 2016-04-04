@@ -4,6 +4,7 @@
 from flask import render_template, redirect, request, flash, \
     session, url_for, jsonify, Blueprint
 
+from .models.dao import MaintainerDao, ProjectDao, TicketDao, CommentDao
 
 admin_blueprint = Blueprint('admin_blueprint', __name__, template_folder='templates')
 
@@ -16,18 +17,17 @@ def admin_login():
         return redirect(url_for('.admin_index'))
 
     if request.method == 'POST':
-        print("post method")
-        if request.form['username'] != 'admin':
-            print("in if")
-            error = 'Invalid username'
-        elif request.form['password'] != 'admin':
-            print("in elif")
-            error = 'Invalid password'
+        dao = MaintainerDao()
+        username = request.form['username']
+        password = request.form['password']
+        result = dao.retrieve_match(dao.authenticate_admin, username, password)
+
+        if len(result) != 1:
+            error = 'There was an error authenticating your account. Please try again.'
         else:
-            print("in else")
             session['logged_in'] = True
-            session['admin'] = request.form['username']
-            flash('You were successfully authenticated')
+            session['admin'] = username
+            flash('You were successfully authenticated.')
             return redirect(url_for('.admin_index'))
 
     return render_template('admin/admin_login.html', error=error)
@@ -36,7 +36,8 @@ def admin_login():
 @admin_blueprint.route('/admin/logout', methods=['GET'])
 def admin_logout():
     session.pop('logged_in', None)
-    flash('You have been logged out')
+    session.pop('admin', None)
+    flash('You have been logged out.')
     return redirect(url_for('index'))
 
 
@@ -50,10 +51,10 @@ def ajax_admin():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
 
-    return jsonify(maintainer_count=3,
-                   project_count=5,
-                   ticket_count=11,
-                   comment_count=24)
+    return jsonify(maintainer_count=MaintainerDao().count(),
+                   project_count=ProjectDao().count(),
+                   ticket_count=TicketDao().count(),
+                   comment_count=CommentDao().count())
 
 
 @admin_blueprint.route('/ajax/admin/maintainers', methods=['GET'])
@@ -61,79 +62,69 @@ def ajax_maintainers():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
 
-    return jsonify(
-            maintainers=[
-                         {
-                            "id": 1,
-                            "username": "elliot",
-                            "email": "elliot@elliothutchinson.com",
-                            "admin": True
-                         },
-                         {
-                            "id": 2,
-                            "username": "james",
-                            "email": "james@gmail.com",
-                            "admin": False
-                         },
-                         {
-                            "id": 3,
-                            "username": "sneakernet",
-                            "email": "ps@postsneakernet.com",
-                            "admin": False
-                         }
-            ])
+    results = MaintainerDao().retrieve_all()
+    json = ["id", "username", "email", "skip", "isAdmin"]
+    maintainers = []
+    for maintainer in results:
+        d = {}
+        for k, v in zip(json, maintainer):
+            d[k] = v
+        d.pop("skip", None)
+        maintainers.append(d)
+
+    return jsonify(maintainers=maintainers)
 
 
 @admin_blueprint.route('/ajax/admin/maintainers/create', methods=['POST'])
 def ajax_create_maintainers():
     if 'logged_in' not in session:
-        print("not logged in")
         return jsonify(error="authentication error")
 
-    print(request.form)
-    print(request.data)
     json_data = request.get_json()
     try:
-        print(json_data.keys())
-        print(json_data['username'])
-        print(json_data['email'])
-        print(json_data['password'])
-        print(json_data['confirmPassword'])
-        print(json_data['isAdmin'])
+        if json_data['password'] == json_data['confirmPassword']:
+            MaintainerDao().create(json_data['username'], json_data['email'],
+                                   json_data['password'], json_data['isAdmin'])
+        else:
+            return jsonify(error="Passwords don't match.")
 
     except:
-        print("that didn't work but carry on")
-        return jsonify(error="authentication error")
+        return jsonify(error="There was in issue creating new maintainer.")
 
-    return jsonify(success="New maintainer was successfully saved")
-    #return jsonify(error="simulating error with submission")
+    return jsonify(success="New maintainer was created.")
 
 
-@admin_blueprint.route('/ajax/admin/maintainers/update', methods=['GET', 'POST'])
-def ajax_update_maintainers():
+@admin_blueprint.route('/ajax/admin/maintainers/update/<maintainer_id>', methods=['GET', 'POST'])
+def ajax_update_maintainers(maintainer_id):
     if 'logged_in' not in session:
-        print("not logged in")
         return jsonify(error="authentication error")
 
     if request.method == 'POST':
-        # verify content exists and not null
+        # todo verify content exists and not null
         json_data = request.get_json()
-        id = -1
         try:
-            print(json_data.keys())
-            id = json_data['id']
             if 'delete' in json_data:
-                return jsonify(success="Deletion of object with id {} was successful".format(id))
+                MaintainerDao().delete(json_data['id'])
+                return jsonify(success="Deletion of maintainer with id {} was successful".format(json_data['id']))
+            else:
+                MaintainerDao().update(json_data['id'], json_data['username'],
+                                       json_data['email'], json_data['password'],
+                                       json_data['isAdmin'])
+                return jsonify(success="Successfully updated maintainer with id {}.".format(json_data['id']))
 
         except:
-            print("ooops there was an issue")
-            return jsonify(error="There was an issue updating data")
+            return jsonify(error="There was an issue updating maintainer.")
 
-        return jsonify(success="Successfully updated id {}".format(id))
+    result = MaintainerDao().retrieve(maintainer_id)
+    print(result)
+    if result is None:
+        return jsonify(error="Maintainer with id {} not found".format(maintainer_id))
 
-    return jsonify(id=111,
-                   username="elliot",
-                   email="elliot@elliot.com",
-                   password="pass1",
-                   confirmPassword="pass1",
-                   isAdmin=True)
+    json = ["id", "username", "email", "password", "isAdmin"]
+    d = {}
+    for k, v in zip(json, result):
+        print("k: {}, v: {}".format(k, v))
+        d[k] = v
+
+    d['confirmPassword'] = d['password']
+    return jsonify(d)

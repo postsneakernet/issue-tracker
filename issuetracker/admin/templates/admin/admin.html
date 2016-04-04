@@ -98,8 +98,8 @@ Admin
         <td>{{id}}</td>
         <td>{{username}}</td>
         <td>{{email}}</td>
-        <td>{{admin}}</td>
-        <td><a href="javascript:void(0)" onclick="admin.getMaintainersUpdateTemplate()">edit/remove</a></td>
+        <td>{{isAdmin}}</td>
+        <td><a href="javascript:void(0)" onclick="admin.getMaintainersUpdateTemplate(0, {{id}})">edit/remove</a></td>
     </tr>
     {{/each}}
     </tbody>
@@ -197,7 +197,7 @@ Admin
         <div class="col-xs-offset-3 col-xs-4">
             <button class="btn btn-default" type="submit">Update</button>
             <span class="half-tab"></span>
-            <button class="btn btn-default" type="button" onclick="admin.deleteForm('/ajax/admin/maintainers/update', '#maintainers-update-form')">Delete</button>
+            <button class="btn btn-default" type="button" onclick="admin.deleteForm('/ajax/admin/maintainers/update/{{id}}', '#maintainers-update-form')">Delete</button>
             <span class="half-tab"></span>
             <button class="btn btn-default" type="button" onclick="admin.getMaintainersTemplate()">Cancel</button>
         </div>
