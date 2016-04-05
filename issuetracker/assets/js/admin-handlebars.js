@@ -247,6 +247,56 @@ var admin = (function () {
         console.log("Does it exist yet: " + $("#tickets-update-form").length);
     };
 
+    var getCommentsTemplate = function (t) {
+        console.log("admin.getCommentsTemplate was called");
+        getTemplate(t, "Comments", "#comments-template", undefined, "/ajax/admin/comments", remoteJSON, function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        });
+    };
+
+    var getCommentsCreateTemplate = function (t) {
+        console.log("admin.getCommentsCreateTemplate was called");
+        getTemplate(t, "Comments", "#comments-create-template", undefined, "/ajax/admin/comments/create", remoteJSON, function () {
+                $("#comments-create-form").validate({
+                    rules: {
+                        name: "required",
+                        email: {
+                            required: true,
+                            email: true
+                        },
+                        content: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/comments/create", admin.getFormData("#comments-create-form"));
+                    }
+                });
+        });
+    };
+
+    var getCommentsUpdateTemplate = function (t, path) {
+        console.log("admin.getCommentsUpdateTemplate was called");
+        getTemplate(t, "Comments", "#comments-update-template", undefined, "/ajax/admin/comments/update/" + path, remoteJSON, function () {
+                $("#comments-update-form").validate({
+                    rules: {
+                        name: "required",
+                        email: {
+                            required: true,
+                            email: true
+                        },
+                        content: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/comments/update/" + path, admin.getFormData("#comments-update-form"), function () {
+                            getCommentsTemplate(5000);
+                        });
+                    }
+                });
+        });
+        console.log("Does it exist yet: " + $("#comments-update-form").length);
+    };
+
     var getFormData = function (formId) {
         console.log("admin.getFormData was called");
         var formInputs = $(formId + ' :input').not(':input[type=button], :input[type=submit]');
@@ -306,6 +356,9 @@ var admin = (function () {
         getTicketsTemplate: getTicketsTemplate,
         getTicketsCreateTemplate: getTicketsCreateTemplate,
         getTicketsUpdateTemplate: getTicketsUpdateTemplate,
+        getCommentsTemplate: getCommentsTemplate,
+        getCommentsCreateTemplate: getCommentsCreateTemplate,
+        getCommentsUpdateTemplate: getCommentsUpdateTemplate,
         getFormData: getFormData,
         sendFormData: sendFormData,
         deleteForm: deleteForm

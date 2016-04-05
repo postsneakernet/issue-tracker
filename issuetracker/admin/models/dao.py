@@ -130,7 +130,7 @@ class CommentDao(Dao):
     def __init__(self):
         DB_TABLE = "ticket_comment"
         SQL_CREATE = "DEFAULT, %s, %s, %s, %s, now(), %s"
-        SQL_UPDATE = "name=%s, email=%s, is_maintainer=%s, content=%s, ticket=%s"
+        SQL_UPDATE = "name=%s, email=%s, is_maintainer=%s, content=%s, ticket_id=%s"
         super().__init__(DB_TABLE, SQL_CREATE, SQL_UPDATE)
 
 

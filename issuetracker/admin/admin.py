@@ -304,3 +304,89 @@ def ajax_update_tickets(ticket_id):
         projects.append(d2)
 
     return jsonify(d, projects=projects)
+
+
+@admin_blueprint.route('/ajax/admin/comments', methods=['GET'])
+def ajax_comments():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    results = CommentDao().retrieve_all()
+    json = ["id", "name", "email", "isMaintainer", "content", "dateCreated", "ticketId"]
+    comments = []
+    for comment in results:
+        d = {}
+        for k, v in zip(json, comment):
+            d[k] = v
+        comments.append(d)
+
+    return jsonify(comments=comments)
+
+
+@admin_blueprint.route('/ajax/admin/comments/create', methods=['GET', 'POST'])
+def ajax_create_comments():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        json_data = request.get_json()
+        try:
+            CommentDao().create(json_data['name'], json_data['email'],
+                    json_data['isMaintainer'], json_data['content'], json_data['ticketId'])
+            return jsonify(success="New comment was created.")
+        except:
+            return jsonify(error="There was in issue creating new comment.")
+
+    results = TicketDao().retrieve_all()
+    tickets = []
+    for ticket in results:
+        d = {}
+        d['id'] = ticket[0]
+        tickets.append(d)
+
+    return jsonify(tickets=tickets)
+
+
+@admin_blueprint.route('/ajax/admin/comments/update/<comment_id>', methods=['GET', 'POST'])
+def ajax_update_comments(comment_id):
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        # todo verify content exists and not null
+        json_data = request.get_json()
+        try:
+            if 'delete' in json_data:
+                CommentDao().delete(json_data['id'])
+                return jsonify(success="Deletion of comment with id {} was successful".format(json_data['id']))
+            else:
+                print(json_data)
+                CommentDao().update(json_data['id'], json_data['name'], json_data['email'],
+                                   json_data['isMaintainer'], json_data['content'], json_data['ticketId'])
+                return jsonify(success="Successfully updated comment with id {}.".format(json_data['id']))
+        except Exception as e:
+            print(e)
+            return jsonify(error="There was an issue updating comment.")
+
+    result = CommentDao().retrieve(comment_id)
+    print(result)
+    if result is None:
+        return jsonify(error="Comment with id {} not found".format(ticket_id))
+
+    json = ["id", "name", "email", "isMaintainer", "content", "skip", "ticketId"]
+    d = {}
+    for k, v in zip(json, result):
+        print("k: {}, v: {}".format(k, v))
+        d[k] = v
+    d.pop('skip', None)
+
+    results = TicketDao().retrieve_all()
+    tickets = []
+    for ticket in results:
+        d2 = {}
+        d2['id'] = ticket[0]
+        if ticket[0] == d['ticketId']:
+            d2['isTicket'] = True
+        tickets.append(d2)
+
+    return jsonify(d, tickets=tickets)

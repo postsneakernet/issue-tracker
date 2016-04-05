@@ -526,10 +526,156 @@ Admin
 
 <script id="comments-template" type="text/x-handlebars-template">
 {% raw %}
-<h3>project name: {{name}}</h3>
-<h3>project desc: {{desc}}</h3>
+<h4><a id="create-comment" onclick="admin.getCommentsCreateTemplate()" href="javascript:void(0)">Create new</a></h4>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>email</th>
+        <th>maintainer</th>
+        <th>content</th>
+        <th>created</th>
+        <th>ticket id</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each comments}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{email}}</td>
+        <td>{{isMaintainer}}</td>
+        <td>
+        <button type="button" id="desc-btn" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="{{content}}">
+        view
+        </button>
+        </td>
+        <td>{{dateCreated}}</td>
+        <td>{{ticketId}}</td>
+        <td><a href="javascript:void(0)" onclick="admin.getCommentsUpdateTemplate(0, {{id}})">edit/remove</a></td>
+    </tr>
+    {{/each}}
+    </tbody>
+</table>
 {% endraw %}
 </script>
+
+<script id="comments-create-template" type="text/x-handlebars-template">
+{% raw %}
+<div class="admin-login">
+<h3>Create new comment</h3>
+<form id="comments-create-form" class="form-horizontal clear-on-success">
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="name">Name</label>
+        <div class="col-xs-4">
+            <input id="name" class="form-control" placeholder="Name" type="text" name="name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="email">Email</label>
+        <div class="col-xs-4">
+            <input id="email" class="form-control" placeholder="Email" type="email" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-3">
+            <label><input id="is-maintainer" type="checkbox" name="is-maintainer"> Maintainer response</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="content">Content</label>
+        <div class="col-xs-4">
+            <textarea id="content" class="form-control" rows=5 placeholder="Content" name="content"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="ticketId">Ticket Id</label>
+        <div class="col-xs-4">
+            <select class="form-control" id ="ticketId">
+                {{#each tickets}}
+                <option>{{id}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-4">
+            <button class="btn btn-default" type="submit">Save</button>
+            <span class="half-tab"></span>
+            <button class="btn btn-default" type="button" onclick="$('#comments-create-form').trigger('reset')">Clear</button>
+            <span class="half-tab"></span>
+            <button class="btn btn-default" type="button" onclick="admin.getCommentsTemplate()">Cancel</button>
+        </div>
+    </div>
+</form>
+</div>
+{% endraw %}
+</script>
+
+<script id="comments-update-template" type="text/x-handlebars-template">
+{% raw %}
+<div class="admin-login">
+<h3>Update comment</h3>
+<form id="comments-update-form" class="form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="name">Id</label>
+        <div class="col-xs-4">
+            <input id="id" class="form-control" {{#if id}}value="{{id}}"{{/if}} type="text" name="id" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="name">Name</label>
+        <div class="col-xs-4">
+            <input id="name" class="form-control" {{#if name}}value="{{name}}"{{/if}} type="text" name="name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="email">Email</label>
+        <div class="col-xs-4">
+            <input id="email" class="form-control" {{#if email}}value="{{email}}"{{/if}} type="email" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-3">
+            <label><input id="is-maintainer" type="checkbox" {{#if isMaintainer}}checked{{/if}} name="is-maintainer"> Maintainer response</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="content">Content</label>
+        <div class="col-xs-4">
+            <textarea id="content" class="form-control" rows=5 name="content">{{content}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="ticketId">Ticket Id</label>
+        <div class="col-xs-4">
+            <select class="form-control" id ="ticketId">
+            {{#each tickets}}
+                {{#if isTicket}}
+                    <option selected>{{id}}</option>
+                {{else}}
+                    <option>{{id}}</option>
+                {{/if}}
+            {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-4">
+            <button class="btn btn-default" type="submit">Update</button>
+            <span class="half-tab"></span>
+            <button class="btn btn-default" type="button" onclick="admin.deleteForm('/ajax/admin/comments/update/{{id}}', '#comments-update-form')">Delete</button>
+            <span class="half-tab"></span>
+            <button class="btn btn-default" type="button" onclick="admin.getCommentsTemplate()">Cancel</button>
+        </div>
+    </div>
+</form>
+</div>
+{% endraw %}
+</script>
+
 
 <div class="content-placeholder"></div>
 
