@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# maintainers.py
+# dao.py
 
 import psycopg2
 
@@ -60,7 +60,7 @@ class Dao:
     def retrieve_match(self, where, *args):
         conn = self.get_connection()
         cur = conn.cursor()
-        sql = "SELECT * FROM {} where {};".format(self.db_table, where)
+        sql = "SELECT * FROM {} WHERE {};".format(self.db_table, where)
         cur.execute(sql, (args))
         result = cur.fetchall()
         self.close_connection(conn, cur)
@@ -92,7 +92,7 @@ class Dao:
     def count(self):
         conn = self.get_connection()
         cur = conn.cursor()
-        sql = "SELECT count(*) from {};".format(self.db_table)
+        sql = "SELECT count(*) FROM {};".format(self.db_table)
         cur.execute(sql)
         result = cur.fetchone()
         self.close_connection(conn, cur)
@@ -120,7 +120,7 @@ class ProjectDao(Dao):
 class TicketDao(Dao):
     def __init__(self):
         DB_TABLE = "ticket"
-        SQL_CREATE = "DEFAULT, %s, %s, %s, %s, %s, %s, now(), now(), %s"
+        SQL_CREATE = "DEFAULT, %s, %s, %s, %s, %s, 'open', now(), now(), %s"
         SQL_UPDATE = "name=%s, email=%s, title=%s, content=%s, current_priority=%s, " \
                      "current_status=%s, date_modified=now(), project_id=%s"
         super().__init__(DB_TABLE, SQL_CREATE, SQL_UPDATE)

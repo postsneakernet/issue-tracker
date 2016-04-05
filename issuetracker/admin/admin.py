@@ -128,3 +128,179 @@ def ajax_update_maintainers(maintainer_id):
 
     d['confirmPassword'] = d['password']
     return jsonify(d)
+
+
+@admin_blueprint.route('/ajax/admin/projects', methods=['GET'])
+def ajax_projects():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    results = ProjectDao().retrieve_all()
+    json = ["id", "title", "description", "dateCreated", "dateModified", "maintainerId"]
+    projects = []
+    for project in results:
+        d = {}
+        for k, v in zip(json, project):
+            d[k] = v
+        projects.append(d)
+
+    return jsonify(projects=projects)
+
+
+@admin_blueprint.route('/ajax/admin/projects/create', methods=['GET', 'POST'])
+def ajax_create_projects():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        json_data = request.get_json()
+        try:
+            ProjectDao().create(json_data['title'], json_data['description'], json_data['maintainerId'])
+            return jsonify(success="New project was created.")
+        except:
+            return jsonify(error="There was in issue creating new maintainer.")
+
+    results = MaintainerDao().retrieve_all()
+    maintainers = []
+    for maintainer in results:
+        d = {}
+        d['id'] = maintainer[0]
+        maintainers.append(d)
+
+    return jsonify(maintainers=maintainers)
+
+
+@admin_blueprint.route('/ajax/admin/projects/update/<project_id>', methods=['GET', 'POST'])
+def ajax_update_projects(project_id):
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        # todo verify content exists and not null
+        json_data = request.get_json()
+        try:
+            if 'delete' in json_data:
+                ProjectDao().delete(json_data['id'])
+                return jsonify(success="Deletion of project with id {} was successful".format(json_data['id']))
+            else:
+                ProjectDao().update(json_data['id'], json_data['title'],
+                                    json_data['description'], json_data['maintainerId'])
+                return jsonify(success="Successfully updated project with id {}.".format(json_data['id']))
+        except:
+            return jsonify(error="There was an issue updating project.")
+
+    result = ProjectDao().retrieve(project_id)
+    print(result)
+    if result is None:
+        return jsonify(error="Project with id {} not found".format(project_id))
+
+    json = ["id", "title", "description", "skip", "skip", "maintainerId"]
+    d = {}
+    for k, v in zip(json, result):
+        print("k: {}, v: {}".format(k, v))
+        d[k] = v
+    d.pop('skip', None)
+    print("dictionary d: {}".format(d))
+
+    results = MaintainerDao().retrieve_all()
+    maintainers = []
+    for maintainer in results:
+        d2 = {}
+        d2['id'] = maintainer[0]
+        if maintainer[0] == d['maintainerId']:
+            d2['isMaintainer'] = True
+        maintainers.append(d2)
+
+    return jsonify(d, maintainers=maintainers)
+
+
+@admin_blueprint.route('/ajax/admin/tickets', methods=['GET'])
+def ajax_tickets():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    results = TicketDao().retrieve_all()
+    json = ["id", "name", "email", "title", "content", "priority", "status", "dateCreated", "dateModified", "projectId"]
+    tickets = []
+    for ticket in results:
+        d = {}
+        for k, v in zip(json, ticket):
+            d[k] = v
+        tickets.append(d)
+
+    return jsonify(tickets=tickets)
+
+
+@admin_blueprint.route('/ajax/admin/tickets/create', methods=['GET', 'POST'])
+def ajax_create_tickets():
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        json_data = request.get_json()
+        try:
+            TicketDao().create(json_data['name'], json_data['email'],
+                    json_data['title'], json_data['content'], json_data['priority'],
+                    json_data['projectId'])
+            return jsonify(success="New ticket was created.")
+        except:
+            return jsonify(error="There was in issue creating new ticket.")
+
+    results = ProjectDao().retrieve_all()
+    projects = []
+    for project in results:
+        d = {}
+        d['id'] = project[0]
+        projects.append(d)
+
+    return jsonify(projects=projects)
+
+
+@admin_blueprint.route('/ajax/admin/tickets/update/<ticket_id>', methods=['GET', 'POST'])
+def ajax_update_tickets(ticket_id):
+    if 'logged_in' not in session:
+        return jsonify(error="authentication error")
+
+    if request.method == 'POST':
+        # todo verify content exists and not null
+        json_data = request.get_json()
+        try:
+            if 'delete' in json_data:
+                TicketDao().delete(json_data['id'])
+                return jsonify(success="Deletion of ticket with id {} was successful".format(json_data['id']))
+            else:
+                TicketDao().update(json_data['id'], json_data['name'], json_data['email'],
+                                   json_data['title'], json_data['content'], json_data['priority'],
+                                   json_data['status'], json_data['projectId'])
+                return jsonify(success="Successfully updated ticket with id {}.".format(json_data['id']))
+        except:
+            return jsonify(error="There was an issue updating ticket.")
+
+    result = TicketDao().retrieve(ticket_id)
+    print(result)
+    if result is None:
+        return jsonify(error="Ticket with id {} not found".format(ticket_id))
+
+    json = ["id", "name", "email", "title", "content", "priority", "status", "skip", "skip", "projectId"]
+    d = {}
+    for k, v in zip(json, result):
+        print("k: {}, v: {}".format(k, v))
+        d[k] = v
+    d.pop('skip', None)
+
+    priority = d['priority']
+    d[priority] = True
+    status = d['status']
+    d[status] = True
+    print("dictionary d: {}".format(d))
+
+    results = ProjectDao().retrieve_all()
+    projects = []
+    for project in results:
+        d2 = {}
+        d2['id'] = project[0]
+        if project[0] == d['projectId']:
+            d2['isProject'] = True
+        projects.append(d2)
+
+    return jsonify(d, projects=projects)

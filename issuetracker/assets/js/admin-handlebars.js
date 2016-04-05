@@ -153,6 +153,100 @@ var admin = (function () {
         console.log("Does it exist yet: " + $("#maintainers-update-form").length);
     };
 
+    var getProjectsTemplate = function (t) {
+        console.log("admin.getProjectTemplate was called");
+        getTemplate(t, "Projects", "#projects-template", undefined, "/ajax/admin/projects", remoteJSON, function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        });
+    };
+
+    var getProjectsCreateTemplate = function (t) {
+        console.log("admin.getProjectsCreateTemplate was called");
+        getTemplate(t, "Projects", "#projects-create-template", undefined, "/ajax/admin/projects/create", remoteJSON, function () {
+                $("#projects-create-form").validate({
+                    rules: {
+                        title: "required",
+                        description: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/projects/create", admin.getFormData("#projects-create-form"));
+                    }
+                });
+        });
+    };
+
+    var getProjectsUpdateTemplate = function (t, path) {
+        console.log("admin.getProjectsUpdateTemplate was called");
+        getTemplate(t, "Projects", "#projects-update-template", undefined, "/ajax/admin/projects/update/" + path, remoteJSON, function () {
+                $("#projects-update-form").validate({
+                    rules: {
+                        title: "required",
+                        description: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/projects/update/" + path, admin.getFormData("#projects-update-form"), function () {
+                            getProjectsTemplate(5000);
+                        });
+                    }
+                });
+        });
+        console.log("Does it exist yet: " + $("#projects-update-form").length);
+    };
+
+    var getTicketsTemplate = function (t) {
+        console.log("admin.getTicketsTemplate was called");
+        getTemplate(t, "Tickets", "#tickets-template", undefined, "/ajax/admin/tickets", remoteJSON, function () {
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        });
+    };
+
+    var getTicketsCreateTemplate = function (t) {
+        console.log("admin.getTicketsCreateTemplate was called");
+        getTemplate(t, "Tickets", "#tickets-create-template", undefined, "/ajax/admin/tickets/create", remoteJSON, function () {
+                $("#tickets-create-form").validate({
+                    rules: {
+                        name: "required",
+                        email: {
+                            required: true,
+                            email: true
+                        },
+                        title: "required",
+                        content: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/tickets/create", admin.getFormData("#tickets-create-form"));
+                    }
+                });
+        });
+    };
+
+    var getTicketsUpdateTemplate = function (t, path) {
+        console.log("admin.getTicketsUpdateTemplate was called");
+        getTemplate(t, "Tickets", "#tickets-update-template", undefined, "/ajax/admin/tickets/update/" + path, remoteJSON, function () {
+                $("#tickets-update-form").validate({
+                    rules: {
+                        name: "required",
+                        email: {
+                            required: true,
+                            email: true
+                        },
+                        title: "required",
+                        content: "required",
+                    },
+                    submitHandler: function () {
+                        admin.sendFormData("/ajax/admin/tickets/update/" + path, admin.getFormData("#tickets-update-form"), function () {
+                            getTicketsTemplate(5000);
+                        });
+                    }
+                });
+        });
+        console.log("Does it exist yet: " + $("#tickets-update-form").length);
+    };
+
     var getFormData = function (formId) {
         console.log("admin.getFormData was called");
         var formInputs = $(formId + ' :input').not(':input[type=button], :input[type=submit]');
@@ -206,6 +300,12 @@ var admin = (function () {
         getMaintainersTemplate: getMaintainersTemplate,
         getMaintainersCreateTemplate: getMaintainersCreateTemplate,
         getMaintainersUpdateTemplate: getMaintainersUpdateTemplate,
+        getProjectsTemplate: getProjectsTemplate,
+        getProjectsCreateTemplate: getProjectsCreateTemplate,
+        getProjectsUpdateTemplate: getProjectsUpdateTemplate,
+        getTicketsTemplate: getTicketsTemplate,
+        getTicketsCreateTemplate: getTicketsCreateTemplate,
+        getTicketsUpdateTemplate: getTicketsUpdateTemplate,
         getFormData: getFormData,
         sendFormData: sendFormData,
         deleteForm: deleteForm
