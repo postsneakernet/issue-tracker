@@ -1,30 +1,65 @@
-{% extends 'projects.html' %}
+{% extends 'project_index.html' %}
 {% block title %}
-Project A
+{{ project.title }}
 {% endblock %}
 
 {% block page_title %}
-Project A
+{{ project.title }}
 {% endblock %}
 
 {% block sub_nav %}
 <div class="sub-header clearfix">
 <nav>
   <ul id="sub-nav" class="nav nav-pills pull-right">
-      <li id="submit" role="presentation"><a href="{{ url_for('submit_ticket') }}">Submit Ticket</a></li>
-      <li id="project-tickets" role="presentation"><a href="{{ url_for('project_tickets') }}">Tickets</a></li>
-      <li id="archive" role="presentation"><a href="{{ url_for('archive') }}">Archive</a></li>
+      <li id="submit" role="presentation"><a href="{{ url_for('submit_ticket', project_id=project.id) }}">Submit Ticket</a></li>
+      <li id="project-tickets" role="presentation"><a href="{{ url_for('project_tickets', project_id=project.id) }}">Tickets</a></li>
+      <li id="archive" role="presentation"><a href="{{ url_for('archive_index', project_id=project.id) }}">Archive</a></li>
     </ul>
 </nav>
-<h4 class="text-muted"><a href="{{ url_for('project_detail') }}">Project A</a></h4>
+<h4 class="text-muted"><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a></h4>
 </div>
 {% endblock %}
 
 {% block content %}
+maintained by <em>{{ project.maintainer.username }}</em>
 <p>
-Some content about this project.
+{{ project.description }}
 </p>
-{{ super() }}
+
+<h3>Recent Activity</h3>
+{% if not tickets %}
+<p>No recent activity found.</p>
+{% endif %}
+{% for ticket in tickets %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="{{ url_for('ticket_detail', project_id=project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
+        | priority: 
+        {% if ticket.current_priority == "low" %}
+            <span class="label label-info">{{ ticket.current_priority }}</span>
+        {% elif ticket.current_priority == "medium" %}
+            <span class="label label-primary">{{ ticket.current_priority }}</span>
+        {% else %}
+            <span class="label label-danger">{{ ticket.current_priority }}</span>
+        {% endif %}
+    </div>
+    <div class="panel-body">
+    {{ ticket.content }} <br>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">submitted by <em>{{ ticket.name }}</em> on {{ ticket.date_created }}
+        | status:
+        {% if ticket.current_status == "closed" %}
+            <span class="label label-success">{{ ticket.current_status }}</span>
+        {% else %}
+            <span class="label label-warning">{{ ticket.current_status }}</span>
+        {% endif %}
+        | {{ ticket.comments|count }} comments
+        </li>
+    </ul>
+</div>
+{% endfor %}
+
 {% endblock %}
 
 {% block inline %}

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # dao.py
 
 import psycopg2

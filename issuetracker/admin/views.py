@@ -1,5 +1,4 @@
-# admin.py
-
+# views.py
 
 from flask import render_template, redirect, request, flash, \
     session, url_for, jsonify, Blueprint
@@ -9,7 +8,7 @@ from .models.dao import MaintainerDao, ProjectDao, TicketDao, CommentDao
 admin_blueprint = Blueprint('admin_blueprint', __name__, template_folder='templates')
 
 
-@admin_blueprint.route('/admin/login', methods=['GET', 'POST'])
+@admin_blueprint.route('/admin/login/', methods=['GET', 'POST'])
 def admin_login():
     error = None
 
@@ -33,7 +32,7 @@ def admin_login():
     return render_template('admin/admin_login.html', error=error)
 
 
-@admin_blueprint.route('/admin/logout', methods=['GET'])
+@admin_blueprint.route('/admin/logout/', methods=['GET'])
 def admin_logout():
     session.pop('logged_in', None)
     session.pop('admin', None)
@@ -41,12 +40,12 @@ def admin_logout():
     return redirect(url_for('index'))
 
 
-@admin_blueprint.route('/admin', methods=['GET'])
+@admin_blueprint.route('/admin/', methods=['GET'])
 def admin_index():
     return render_template('admin/admin.html')
 
 
-@admin_blueprint.route('/ajax/admin', methods=['GET'])
+@admin_blueprint.route('/ajax/admin/', methods=['GET'])
 def ajax_admin():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -57,7 +56,7 @@ def ajax_admin():
                    comment_count=CommentDao().count())
 
 
-@admin_blueprint.route('/ajax/admin/maintainers', methods=['GET'])
+@admin_blueprint.route('/ajax/admin/maintainers/', methods=['GET'])
 def ajax_maintainers():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -75,7 +74,7 @@ def ajax_maintainers():
     return jsonify(maintainers=maintainers)
 
 
-@admin_blueprint.route('/ajax/admin/maintainers/create', methods=['POST'])
+@admin_blueprint.route('/ajax/admin/maintainers/create/', methods=['POST'])
 def ajax_create_maintainers():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -130,7 +129,7 @@ def ajax_update_maintainers(maintainer_id):
     return jsonify(d)
 
 
-@admin_blueprint.route('/ajax/admin/projects', methods=['GET'])
+@admin_blueprint.route('/ajax/admin/projects/', methods=['GET'])
 def ajax_projects():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -147,7 +146,7 @@ def ajax_projects():
     return jsonify(projects=projects)
 
 
-@admin_blueprint.route('/ajax/admin/projects/create', methods=['GET', 'POST'])
+@admin_blueprint.route('/ajax/admin/projects/create/', methods=['GET', 'POST'])
 def ajax_create_projects():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -214,7 +213,7 @@ def ajax_update_projects(project_id):
     return jsonify(d, maintainers=maintainers)
 
 
-@admin_blueprint.route('/ajax/admin/tickets', methods=['GET'])
+@admin_blueprint.route('/ajax/admin/tickets/', methods=['GET'])
 def ajax_tickets():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -231,7 +230,7 @@ def ajax_tickets():
     return jsonify(tickets=tickets)
 
 
-@admin_blueprint.route('/ajax/admin/tickets/create', methods=['GET', 'POST'])
+@admin_blueprint.route('/ajax/admin/tickets/create/', methods=['GET', 'POST'])
 def ajax_create_tickets():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -306,7 +305,7 @@ def ajax_update_tickets(ticket_id):
     return jsonify(d, projects=projects)
 
 
-@admin_blueprint.route('/ajax/admin/comments', methods=['GET'])
+@admin_blueprint.route('/ajax/admin/comments/', methods=['GET'])
 def ajax_comments():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")
@@ -323,7 +322,7 @@ def ajax_comments():
     return jsonify(comments=comments)
 
 
-@admin_blueprint.route('/ajax/admin/comments/create', methods=['GET', 'POST'])
+@admin_blueprint.route('/ajax/admin/comments/create/', methods=['GET', 'POST'])
 def ajax_create_comments():
     if 'logged_in' not in session:
         return jsonify(error="authentication error")

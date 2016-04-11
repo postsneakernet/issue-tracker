@@ -1,4 +1,4 @@
-{% extends 'project_detail.html' %}
+{% extends 'base.html' %}
 {% block title %}
 Tickets
 {% endblock %}
@@ -14,7 +14,7 @@ Tickets
 {% for ticket in tickets %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <a href="{{ url_for('ticket_detail', project_id=project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
+        <a href="{{ url_for('ticket_detail', project_id=ticket.project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
         | priority: 
         {% if ticket.current_priority == "low" %}
             <span class="label label-info">{{ ticket.current_priority }}</span>
@@ -23,6 +23,8 @@ Tickets
         {% else %}
             <span class="label label-danger">{{ ticket.current_priority }}</span>
         {% endif %}
+        | submitted to <a href="{{ url_for('project_detail', project_id=ticket.project.id) }}">
+            {{ ticket.project.title }}</a>
     </div>
     <div class="panel-body">
     {{ ticket.content }} <br>
@@ -43,6 +45,5 @@ Tickets
 {% endblock %}
 
 {% block inline %}
-custom.setActive("#project-tickets");
-{{ super() }}
+custom.setActive("#tickets");
 {% endblock %}

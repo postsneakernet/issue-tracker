@@ -32,8 +32,8 @@
     <nav>
     <ul id="nav" class="nav nav-pills pull-right">
         <li id="index" role="presentation"><a href="{{ url_for('index') }}">Issue Tracker</a></li>
-        <li id="projects" role="presentation"><a href="{{ url_for('projects') }}">Projects</a></li>
-        <li id="tickets" class="before-search" role="presentation"><a href="{{ url_for('tickets') }}">Tickets</a></li>
+        <li id="projects" role="presentation"><a href="{{ url_for('project_index') }}">Projects</a></li>
+        <li id="tickets" class="before-search" role="presentation"><a href="{{ url_for('ticket_index') }}">Tickets</a></li>
       <li role="presentation">
       <form action="{{ url_for('search') }}">
       <div class="input-group stylish-input-group">

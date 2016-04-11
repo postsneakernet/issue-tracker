@@ -97,12 +97,12 @@ var admin = (function () {
 
     var getAdminTemplate = function (t) {
         console.log("admin.getAdminTemplate was called");
-        getTemplate(t, "Admin", "#admin-template", undefined, "/ajax/admin", remoteJSON);
+        getTemplate(t, "Admin", "#admin-template", undefined, "/ajax/admin/", remoteJSON);
     };
 
     var getMaintainersTemplate = function (t) {
         console.log("admin.getMaintainersTemplate was called");
-        getTemplate(t, "Maintainers", "#maintainers-template", undefined, "/ajax/admin/maintainers", remoteJSON);
+        getTemplate(t, "Maintainers", "#maintainers-template", undefined, "/ajax/admin/maintainers/", remoteJSON);
     };
 
     var getMaintainersCreateTemplate = function (t) {
@@ -122,7 +122,7 @@ var admin = (function () {
                 }
             },
             submitHandler: function () {
-                admin.sendFormData("/ajax/admin/maintainers/create", admin.getFormData("#maintainers-create-form"));
+                admin.sendFormData("/ajax/admin/maintainers/create/", admin.getFormData("#maintainers-create-form"));
             }
         });
     };
@@ -155,7 +155,7 @@ var admin = (function () {
 
     var getProjectsTemplate = function (t) {
         console.log("admin.getProjectTemplate was called");
-        getTemplate(t, "Projects", "#projects-template", undefined, "/ajax/admin/projects", remoteJSON, function () {
+        getTemplate(t, "Projects", "#projects-template", undefined, "/ajax/admin/projects/", remoteJSON, function () {
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
@@ -164,14 +164,14 @@ var admin = (function () {
 
     var getProjectsCreateTemplate = function (t) {
         console.log("admin.getProjectsCreateTemplate was called");
-        getTemplate(t, "Projects", "#projects-create-template", undefined, "/ajax/admin/projects/create", remoteJSON, function () {
+        getTemplate(t, "Projects", "#projects-create-template", undefined, "/ajax/admin/projects/create/", remoteJSON, function () {
                 $("#projects-create-form").validate({
                     rules: {
                         title: "required",
                         description: "required",
                     },
                     submitHandler: function () {
-                        admin.sendFormData("/ajax/admin/projects/create", admin.getFormData("#projects-create-form"));
+                        admin.sendFormData("/ajax/admin/projects/create/", admin.getFormData("#projects-create-form"));
                     }
                 });
         });
@@ -197,7 +197,7 @@ var admin = (function () {
 
     var getTicketsTemplate = function (t) {
         console.log("admin.getTicketsTemplate was called");
-        getTemplate(t, "Tickets", "#tickets-template", undefined, "/ajax/admin/tickets", remoteJSON, function () {
+        getTemplate(t, "Tickets", "#tickets-template", undefined, "/ajax/admin/tickets/", remoteJSON, function () {
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
@@ -206,7 +206,7 @@ var admin = (function () {
 
     var getTicketsCreateTemplate = function (t) {
         console.log("admin.getTicketsCreateTemplate was called");
-        getTemplate(t, "Tickets", "#tickets-create-template", undefined, "/ajax/admin/tickets/create", remoteJSON, function () {
+        getTemplate(t, "Tickets", "#tickets-create-template", undefined, "/ajax/admin/tickets/create/", remoteJSON, function () {
                 $("#tickets-create-form").validate({
                     rules: {
                         name: "required",
@@ -218,7 +218,7 @@ var admin = (function () {
                         content: "required",
                     },
                     submitHandler: function () {
-                        admin.sendFormData("/ajax/admin/tickets/create", admin.getFormData("#tickets-create-form"));
+                        admin.sendFormData("/ajax/admin/tickets/create/", admin.getFormData("#tickets-create-form"));
                     }
                 });
         });
@@ -249,7 +249,7 @@ var admin = (function () {
 
     var getCommentsTemplate = function (t) {
         console.log("admin.getCommentsTemplate was called");
-        getTemplate(t, "Comments", "#comments-template", undefined, "/ajax/admin/comments", remoteJSON, function () {
+        getTemplate(t, "Comments", "#comments-template", undefined, "/ajax/admin/comments/", remoteJSON, function () {
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
@@ -258,7 +258,7 @@ var admin = (function () {
 
     var getCommentsCreateTemplate = function (t) {
         console.log("admin.getCommentsCreateTemplate was called");
-        getTemplate(t, "Comments", "#comments-create-template", undefined, "/ajax/admin/comments/create", remoteJSON, function () {
+        getTemplate(t, "Comments", "#comments-create-template", undefined, "/ajax/admin/comments/create/", remoteJSON, function () {
                 $("#comments-create-form").validate({
                     rules: {
                         name: "required",
@@ -269,7 +269,7 @@ var admin = (function () {
                         content: "required",
                     },
                     submitHandler: function () {
-                        admin.sendFormData("/ajax/admin/comments/create", admin.getFormData("#comments-create-form"));
+                        admin.sendFormData("/ajax/admin/comments/create/", admin.getFormData("#comments-create-form"));
                     }
                 });
         });

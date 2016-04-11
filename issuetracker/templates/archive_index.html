@@ -1,10 +1,10 @@
 {% extends 'project_detail.html' %}
 {% block title %}
-Tickets
+Archive
 {% endblock %}
 
 {% block page_title %}
-Tickets
+Archive
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@ Tickets
 {% for ticket in tickets %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <a href="{{ url_for('ticket_detail', project_id=project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
+        <a href="{{ url_for('archive_detail', project_id=project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
         | priority: 
         {% if ticket.current_priority == "low" %}
             <span class="label label-info">{{ ticket.current_priority }}</span>
@@ -43,6 +43,6 @@ Tickets
 {% endblock %}
 
 {% block inline %}
-custom.setActive("#project-tickets");
+custom.setActive("#archive");
 {{ super() }}
 {% endblock %}

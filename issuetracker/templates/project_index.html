@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+Projects
+{% endblock %}
+
+{% block page_title %}
+Projects
+{% endblock %}
+
+{% block content %}
+{% if not projects %}
+<p>No projects found.</p>
+{% endif %}
+{% for project in projects %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a>
+        | maintained by {{ project.maintainer.username }}
+        | {{ project.tickets|count }} tickets
+    </div>
+    <div class="panel-body">
+    <p>{{ project.description }}</p>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block inline %}
+custom.setActive("#projects");
+{% endblock %}

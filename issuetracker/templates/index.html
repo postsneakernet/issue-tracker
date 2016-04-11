@@ -8,8 +8,21 @@ Issue Tracker
 {% endblock %}
 
 {% block content %}
-Issue Tracker content here / recent activity
-{{ super() }}
+<h3>Recent Activity</h3>
+{% if not projects %}
+<p>No recent activity found.</p>
+{% endif %}
+
+{% for project in projects %}
+<h3>{{ project.title }}</h4>
+<h4>{{ project.description }}</h4>
+{% endfor %}
+
+{% for ticket in tickets %}
+<h3>{{ ticket.title }}</h4>
+<h4>{{ ticket.content }}</h4>
+{% endfor %}
+
 {% endblock %}
 
 {% block inline %}
