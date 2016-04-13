@@ -23,8 +23,9 @@ Tickets
         {% else %}
             <span class="label label-danger">{{ ticket.current_priority }}</span>
         {% endif %}
+        | last modified on {{ ticket.date_modified }}
         | submitted to <a href="{{ url_for('project_detail', project_id=ticket.project.id) }}">
-            {{ ticket.project.title }}</a>
+        {{ ticket.project.title }}</a>
     </div>
     <div class="panel-body">
     {{ ticket.content }} <br>

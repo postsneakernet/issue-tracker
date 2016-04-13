@@ -15,8 +15,14 @@ Projects
 <div class="panel panel-default">
     <div class="panel-heading">
         <a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a>
-        | maintained by {{ project.maintainer.username }}
+        | maintained by <em>{{ project.maintainer.username }}</em>
         | {{ project.tickets|count }} tickets
+        {% if project.open_tickets|count > 0 %}
+            | {{ project.open_tickets|count }} <span class="label label-warning">open</span>
+        {% endif %}
+        {% if project.high_tickets|count > 0 %}
+            | {{ project.high_tickets|count }} <span class="label label-danger">high</span>
+        {% endif %}
     </div>
     <div class="panel-body">
     <p>{{ project.description }}</p>

@@ -21,7 +21,8 @@
 {% endblock %}
 
 {% block content %}
-maintained by <em>{{ project.maintainer.username }}</em>
+<p>created on {{ project.date_created }}</p>
+<p>maintained by <em>{{ project.maintainer.username }}</em></p>
 <p>
 {{ project.description }}
 </p>
@@ -42,6 +43,7 @@ maintained by <em>{{ project.maintainer.username }}</em>
         {% else %}
             <span class="label label-danger">{{ ticket.current_priority }}</span>
         {% endif %}
+        | last modified on {{ ticket.date_modified }}
     </div>
     <div class="panel-body">
     {{ ticket.content }} <br>

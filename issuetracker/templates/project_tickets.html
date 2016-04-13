@@ -23,6 +23,7 @@ Tickets
         {% else %}
             <span class="label label-danger">{{ ticket.current_priority }}</span>
         {% endif %}
+        | last modified on {{ ticket.date_modified }}
     </div>
     <div class="panel-body">
     {{ ticket.content }} <br>

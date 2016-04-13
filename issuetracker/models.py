@@ -2,6 +2,8 @@
 
 from sqlalchemy.orm import relationship
 
+from sqlalchemy.orm.session import object_session
+
 from issuetracker import Base
 
 
@@ -44,6 +46,16 @@ class Project(Base):
                 'modified': self.date_modified,
                 'maintainer_id': self.maintainer_id,
         }
+
+    def _get_open_tickets(self):
+        return object_session(self).query(Ticket).with_parent(self).filter(Ticket.current_status=='open').all()
+
+    open_tickets = property(_get_open_tickets)
+
+    def _get_high_tickets(self):
+        return object_session(self).query(Ticket).with_parent(self).filter(Ticket.current_priority=='high').all()
+
+    high_tickets = property(_get_high_tickets)
 
 
 class Ticket(Base):

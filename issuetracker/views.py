@@ -23,16 +23,11 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 
-# todo:
-# create 404 img
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
 
 
-# todo:
-# add brief site description
-# fix template formatting
 @app.route('/', methods=['GET'])
 def index():
     projects = Project.query.order_by(desc(Project.date_modified)).limit(2).all()
@@ -40,17 +35,12 @@ def index():
     return render_template('index.html', projects=projects, tickets=tickets)
 
 
-# todo:
-# show ticket count, open ticket count, high priority count
 @app.route('/projects/', methods=['GET'])
 def project_index():
     projects = Project.query.order_by(Project.title).all()
     return render_template('project_index.html', projects=projects)
 
-# todo:
-# show data created, adjusted in template
-# show date modified for recent activity of ticket
-# adjust spacing of info nuggets with half-tab class
+
 @app.route('/projects/<int:project_id>', methods=['GET'])
 def project_detail(project_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -62,9 +52,6 @@ def project_detail(project_id):
     return render_template('project_detail.html', project=project, tickets=tickets)
 
 
-# todo:
-# adjust spacing of info nuggets with half-tab class
-# show date modified for recent activity of ticket
 @app.route('/projects/<int:project_id>/tickets/', methods=['GET'])
 def project_tickets(project_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -90,7 +77,11 @@ def ticket_detail(project_id, ticket_id):
         abort(404)
 
     if ticket is None:
-        abort(404)
+        archive = Ticket.query.filter_by(id=ticket_id).filter_by(current_status='closed').first()
+        if archive is None:
+            abort(404)
+        else:
+            return redirect(url_for('archive_detail', project_id=project_id, ticket_id=ticket_id))
 
     if request.method == 'POST':
         pass
@@ -98,9 +89,6 @@ def ticket_detail(project_id, ticket_id):
     return render_template('ticket_detail.html', project=project, ticket=ticket)
 
 
-# todo:
-# adjust spacing of info nuggets with half-tab class
-# show date modified for recent activity of ticket
 @app.route('/projects/<int:project_id>/archive/', methods=['GET'])
 def archive_index(project_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -145,9 +133,6 @@ def submit_ticket(project_id):
     return render_template('submit_ticket.html', project=project)
 
 
-# todo:
-# adjust spacing of info nuggets with half-tab class
-# show date modified for recent activity of ticket
 @app.route('/tickets/', methods=['GET'])
 def ticket_index():
     tickets = Ticket.query.filter_by(current_status='open').order_by(desc(Ticket.date_created)).all()

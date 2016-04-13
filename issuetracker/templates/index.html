@@ -8,19 +8,62 @@ Issue Tracker
 {% endblock %}
 
 {% block content %}
-<h3>Recent Activity</h3>
+<p>
+Issue Tracker is a general issue tracker for use in projects requiring a ticketing system
+such as a bug tracker or call support system.
+</p>
+<h3>Recent Project Activity</h3>
 {% if not projects %}
 <p>No recent activity found.</p>
 {% endif %}
 
 {% for project in projects %}
-<h3>{{ project.title }}</h4>
-<h4>{{ project.description }}</h4>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a>
+        | maintained by {{ project.maintainer.username }}
+        | {{ project.tickets|count }} tickets
+    </div>
+    <div class="panel-body">
+    <p>{{ project.description }}</p>
+    </div>
+</div>
 {% endfor %}
 
+<h3>Recent Ticket Activity</h3>
+{% if not tickets %}
+<p>No recent activity found.</p>
+{% endif %}
 {% for ticket in tickets %}
-<h3>{{ ticket.title }}</h4>
-<h4>{{ ticket.content }}</h4>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="{{ url_for('ticket_detail', project_id=ticket.project.id, ticket_id=ticket.id) }}">{{ ticket.title }}</a>
+        | priority: 
+        {% if ticket.current_priority == "low" %}
+            <span class="label label-info">{{ ticket.current_priority }}</span>
+        {% elif ticket.current_priority == "medium" %}
+            <span class="label label-primary">{{ ticket.current_priority }}</span>
+        {% else %}
+            <span class="label label-danger">{{ ticket.current_priority }}</span>
+        {% endif %}
+        | submitted to: 
+        <a href="{{ url_for('project_detail', project_id=ticket.project.id) }}">{{ ticket.project.title }}</a>
+    </div>
+    <div class="panel-body">
+    {{ ticket.content }} <br>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">submitted by <em>{{ ticket.name }}</em> on {{ ticket.date_created }}
+        | status:
+        {% if ticket.current_status == "closed" %}
+            <span class="label label-success">{{ ticket.current_status }}</span>
+        {% else %}
+            <span class="label label-warning">{{ ticket.current_status }}</span>
+        {% endif %}
+        | {{ ticket.comments|count }} comments
+        </li>
+    </ul>
+</div>
 {% endfor %}
 
 {% endblock %}
