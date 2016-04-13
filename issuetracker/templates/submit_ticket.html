@@ -8,11 +8,60 @@ Submit Ticket
 {% endblock %}
 
 {% block content %}
-Submit ticket form here.
-{{ super() }}
+<div>
+<div>
+<h3> </h3>
+<form id="submit-ticket-form" class="form-horizontal" action="{{ url_for('submit_ticket', project_id=project.id) }}" method="post">
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="name">Name</label>
+        <div class="col-xs-4">
+            <input id="name" class="form-control" placeholder="Name" type="text" name="name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="email">Email</label>
+        <div class="col-xs-4">
+            <input id="email" class="form-control" placeholder="Email" type="email" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="title">Title</label>
+        <div class="col-xs-4">
+            <input id="title" class="form-control" placeholder="Title" type="text" name="title">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="content">Content</label>
+        <div class="col-xs-4">
+            <textarea id="content" class="form-control" rows=5 placeholder="Content" name="content"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-3" for="priority">Priority</label>
+        <div class="col-xs-4">
+            <select class="form-control" id ="priority" name="priority">
+                <option>low</option>
+                <option>medium</option>
+                <option>high</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-4">
+            <button class="btn btn-default" type="submit">Save</button>
+            <span class="half-tab"></span>
+            <button class="btn btn-default" type="button" onclick="$('#submit-ticket-form').trigger('reset')">Clear</button>
+            <span class="half-tab"></span>
+            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</form>
+</div>
+</div>
 {% endblock %}
 
 {% block inline %}
 custom.setActive("#submit");
+custom.addTicketValidation();
 {{ super() }}
 {% endblock %}

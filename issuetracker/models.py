@@ -25,7 +25,6 @@ class Maintainer(Base):
 class Project(Base):
     __table__ = Base.metadata.tables['project']
 
-    #maintainer = relationship('Maintainer')
     tickets = relationship("Ticket", backref="project")
 
     def __init__(self, title=None, description=None, maintainer=None):
@@ -61,17 +60,15 @@ class Project(Base):
 class Ticket(Base):
     __table__ = Base.metadata.tables['ticket']
 
-    #project = relationship("Project")
     comments = relationship("Comment", backref="ticket")
 
     def __init__(self, name=None, email=None, title=None, content=None,
-                 current_priority=None, current_status=None, project=None):
+                 current_priority=None, project=None):
         self.name = name
         self.email = email
         self.title = title
         self.content = content
         self.current_priority = current_priority
-        self.current_status = current_status
         self.project = project
 
     def __repr__(self):

@@ -67,7 +67,7 @@ def project_tickets(project_id):
 # display ticket info in template
 # display all comments below ticket
 # add comment form at bottom with validation
-# validate, clean, and save comment in db and flash success message
+# clean, and save comment in db and flash success message
 @app.route('/projects/<int:project_id>/tickets/<int:ticket_id>', methods=['GET', 'POST'])
 def ticket_detail(project_id, ticket_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -118,19 +118,37 @@ def archive_detail(project_id, ticket_id):
 
 
 # todo:
-# create ticket form in template with validation
-# validate, clean, and save ticket in db and flash success message
+# clean before saving in db
 @app.route('/projects/<int:project_id>/submit/', methods=['GET', 'POST'])
 def submit_ticket(project_id):
     project = Project.query.filter_by(id=project_id).first()
+    error = None
 
     if project is None:
         abort(404)
 
     if request.method == 'POST':
-        pass
+        print(request.form)
+        try:
+            t = Ticket(request.form['name'],
+                    request.form['email'],
+                    request.form['title'],
+                    request.form['content'],
+                    request.form['priority']
+                    )
+            t.project = project
+            db_session.add(t)
+            db_session.commit()
 
-    return render_template('submit_ticket.html', project=project)
+            print("post method form submission")
+            flash("New ticket was successfully submitted.")
+            return redirect(url_for('project_detail', project_id=project_id))
+
+        except Exception as e:
+            print(e)
+            error = "There was an issue creating ticket."
+
+    return render_template('submit_ticket.html', project=project, error=error)
 
 
 @app.route('/tickets/', methods=['GET'])
@@ -139,21 +157,12 @@ def ticket_index():
     return render_template('ticket_index.html', tickets=tickets)
 
 
-
-
-
-
-
 # todo:
 # accept form and query models
 # setup template to dispaly results or nothing found msg
 @app.route('/search/', methods=['GET'])
 def search():
     return render_template('search.html')
-
-
-
-
 
 
 # todo:

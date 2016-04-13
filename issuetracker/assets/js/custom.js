@@ -17,9 +17,29 @@ var custom = (function () {
         $(id).addClass(className);
     };
 
+    var addTicketValidation = function () {
+        console.log("custom.addTicketValidation was called");
+        $("#submit-ticket-form").validate({
+            rules: {
+                name: "required",
+                email: {
+                    required: true,
+                    email: true
+                },
+                title: "required",
+                content: "required",
+            },
+            submitHandler: function (form) {
+                console.log("you need to submit form here");
+                form.submit();
+            }
+        });
+    };
+
     return {
         setActive: setActive,
         updateActive: updateActive,
-        setClass: setClass
+        setClass: setClass,
+        addTicketValidation: addTicketValidation
     };
 }());
