@@ -21,6 +21,15 @@ class Maintainer(Base):
     def __repr__(self):
         return "<Maintainer(id='%s', username='%s')>" % (self.id, self.username)
 
+    @property
+    def serialize(self):
+        return {
+                'id': self.id,
+                'username': self.username,
+                'email': self.email,
+                'isAdmin': self.is_admin,
+        }
+
 
 class Project(Base):
     __table__ = Base.metadata.tables['project']
@@ -43,7 +52,7 @@ class Project(Base):
                 'description': self.description,
                 'created': self.date_created,
                 'modified': self.date_modified,
-                'maintainer_id': self.maintainer_id,
+                'maintainerId': self.maintainer_id,
         }
 
     def _get_open_tickets(self):
@@ -74,14 +83,40 @@ class Ticket(Base):
     def __repr__(self):
         return "<Ticket(id='%s', title='%s')>" % (self.id, self.title)
 
+    @property
+    def serialize(self):
+        return {
+                'id': self.id,
+                'name': self.name,
+                'email': self.email,
+                'title': self.title,
+                'content': self.content,
+                'created': self.date_created,
+                'modified': self.date_modified,
+                'projectId': self.project_id,
+        }
+
 
 class Comment(Base):
     __table__ = Base.metadata.tables['ticket_comment']
 
-    def __init__(self, name=None, email=None, content=None):
+    def __init__(self, name=None, email=None, content=None, ticket=None):
         self.name = name
         self.email = email
         self.content = content
+        self.ticket = ticket
 
     def __repr__(self):
         return "<Comment(id='%s', name='%s', created='%s')>" % (self.id, self.name, self.date_created)
+
+    @property
+    def serialize(self):
+        return {
+                'id': self.id,
+                'name': self.name,
+                'email': self.email,
+                'isMaintainer': self.is_maintainer,
+                'content': self.content,
+                'created': self.date_created,
+                'ticketId': self.ticket_id,
+        }
