@@ -1,24 +1,18 @@
 var custom = (function () {
-    console.log("custom iife was called");
-
     var setActive = function (id) {
-        console.log("custom.setActive was called");
         $(id).addClass("active");
     };
 
     var updateActive = function (setId, removeId) {
-        console.log("custom.updateActive was called");
         $(removeId).removeClass("active");
         $(setId).addClass("active");
     };
 
     var setClass = function (id, className) {
-        console.log("custom.setClass was called");
         $(id).addClass(className);
     };
 
     var addTicketValidation = function () {
-        console.log("custom.addTicketValidation was called");
         $("#submit-ticket-form").validate({
             rules: {
                 name: "required",
@@ -36,10 +30,27 @@ var custom = (function () {
         });
     };
 
+    var addCommentValidation = function () {
+        $("#submit-comment-form").validate({
+            rules: {
+                name: "required",
+                email: {
+                    required: true,
+                    email: true
+                },
+                content: "required",
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+    };
+
     return {
         setActive: setActive,
         updateActive: updateActive,
         setClass: setClass,
-        addTicketValidation: addTicketValidation
+        addTicketValidation: addTicketValidation,
+        addCommentValidation: addCommentValidation
     };
 }());

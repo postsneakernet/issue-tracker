@@ -175,7 +175,6 @@ def ajax_update_projects(project_id):
         return jsonify(error="authentication error")
 
     if request.method == 'POST':
-        # todo verify content exists and not null
         json_data = request.get_json()
         try:
             if 'delete' in json_data:

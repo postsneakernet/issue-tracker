@@ -1,15 +1,48 @@
 {% extends 'project_detail.html' %}
 {% block title %}
-Archived Ticket A
+{{ ticket.title }}
 {% endblock %}
 
 {% block page_title %}
-Archived Ticket A
+{{ ticket.title }}
 {% endblock %}
 
 {% block content %}
-Some content about archived ticket.
-{{ super() }}
+<p>created on {{ ticket.date_created }}</p>
+<p>submitted by {{ ticket.name }}</p>
+<p><span class="label label-success">{{ ticket.current_status }}</span>
+    {% if ticket.current_priority == "low" %}
+        <span class="label label-info">{{ ticket.current_priority }}</span>
+    {% elif ticket.current_priority == "medium" %}
+        <span class="label label-primary">{{ ticket.current_priority }}</span>
+    {% else %}
+        <span class="label label-danger">{{ ticket.current_priority }}</span>
+    {% endif %}
+</p>
+<p>{{ ticket.content }}</p>
+<p>last modified on {{ ticket.date_modified }}</p>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Comments</h3>
+    </div>
+    {% if ticket.comments|length == 0 %}
+        <div class="panel-body">No comments.</div>
+    {% endif %}
+    <ul class="list-group">
+    {% for comment in ticket.comments %}
+        {% if comment.is_maintainer %}
+            <li class="list-group-item">Maintainer response:
+            <div class="well"><em>{{ comment.name }}</em>: {{ comment.content }}</div>
+            submitted on {{ comment.date_created }}
+            </li>
+        {% else %}
+        <li class="list-group-item"><em>{{ comment.name }}</em>: {{ comment.content }}
+            <br><br>submitted on {{ comment.date_created }}
+        </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
 {% endblock %}
 
 {% block inline %}

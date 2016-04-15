@@ -78,15 +78,10 @@ class Ticket(Base):
 class Comment(Base):
     __table__ = Base.metadata.tables['ticket_comment']
 
-    #ticket = relationship("Ticket")
-
-    def __init__(self, name=None, email=None, is_maintainer=None,
-                 content=None, ticket=None):
+    def __init__(self, name=None, email=None, content=None):
         self.name = name
         self.email = email
-        self.is_maintainer = is_maintainer
         self.content = content
-        self.ticket = ticket
 
     def __repr__(self):
         return "<Comment(id='%s', name='%s', created='%s')>" % (self.id, self.name, self.date_created)

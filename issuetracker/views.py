@@ -63,15 +63,11 @@ def project_tickets(project_id):
     return render_template('project_tickets.html', project=project, tickets=tickets)
 
 
-# todo:
-# display ticket info in template
-# display all comments below ticket
-# add comment form at bottom with validation
-# clean, and save comment in db and flash success message
 @app.route('/projects/<int:project_id>/tickets/<int:ticket_id>', methods=['GET', 'POST'])
 def ticket_detail(project_id, ticket_id):
     project = Project.query.filter_by(id=project_id).first()
     ticket = Ticket.query.filter_by(id=ticket_id).filter_by(current_status='open').first()
+    error = None
 
     if project is None:
         abort(404)
@@ -84,9 +80,22 @@ def ticket_detail(project_id, ticket_id):
             return redirect(url_for('archive_detail', project_id=project_id, ticket_id=ticket_id))
 
     if request.method == 'POST':
-        pass
+        try:
+            c = Comment(request.form['name'],
+                    request.form['email'],
+                    request.form['content'],
+                    )
+            c.ticket = ticket
+            db_session.add(c)
+            db_session.commit()
 
-    return render_template('ticket_detail.html', project=project, ticket=ticket)
+            flash("New comment was successfully submitted.")
+            return redirect(url_for('ticket_detail', project_id=project_id, ticket_id=ticket_id))
+
+        except Exception as e:
+            error = "There was an issue creating ticket."
+
+    return render_template('ticket_detail.html', project=project, ticket=ticket, error=error)
 
 
 @app.route('/projects/<int:project_id>/archive/', methods=['GET'])
@@ -100,9 +109,6 @@ def archive_index(project_id):
     return render_template('archive_index.html', project=project, tickets=tickets)
 
 
-# todo:
-# display ticket info in template
-# display all comments below ticket
 @app.route('/projects/<int:project_id>/archive/<int:ticket_id>', methods=['GET'])
 def archive_detail(project_id, ticket_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -117,8 +123,6 @@ def archive_detail(project_id, ticket_id):
     return render_template('archive_detail.html', project=project, ticket=ticket)
 
 
-# todo:
-# clean before saving in db
 @app.route('/projects/<int:project_id>/submit/', methods=['GET', 'POST'])
 def submit_ticket(project_id):
     project = Project.query.filter_by(id=project_id).first()
@@ -157,17 +161,11 @@ def ticket_index():
     return render_template('ticket_index.html', tickets=tickets)
 
 
-# todo:
-# accept form and query models
-# setup template to dispaly results or nothing found msg
 @app.route('/search/', methods=['GET'])
 def search():
     return render_template('search.html')
 
 
-# todo:
-# setup rest api for models
-# create angular spa
 @app.route('/dashboard/', methods=['GET'])
 def dashboard():
     return render_template('dashboard.html')
